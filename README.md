@@ -29,7 +29,7 @@ node todoApp.js
 
 ## How to Use
 
-Commands: `add`, `list`, `remove`, `clear all`, `exit`
+Commands: `add`, `list`, update, `remove`, `clear all`, `exit`
 
 ## Technologies Used
 

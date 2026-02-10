@@ -52,6 +52,32 @@ const listTodos = (): void => {
   });
 };
 
+// Update a todo
+const updateTodo = (): void => {
+  rl.question("Enter task ID to update: ", (input: string) => {
+    const id: number = parseInt(input);
+
+    // Find the todo with matching ID
+    const todoToUpdate = todos.find((todo: Todo) => todo.id === id);
+
+    if (!todoToUpdate) {
+      console.log("Task not found!\n");
+      showMenu();
+    } else {
+      console.log(`Current task: ${todoToUpdate.text}`);
+      rl.question("Enter new task text: ", (newText: string) => {
+        if (newText.trim() === "") {
+          console.log("Task cannot be empty!\n");
+        } else {
+          todoToUpdate.text = newText.trim();
+          console.log("Task updated successfully!\n");
+        }
+        showMenu();
+      });
+    }
+  });
+};
+
 // Remove a todo
 const removeTodo = (): void => {
   rl.question("Enter task ID to remove: ", (input: string) => {
@@ -80,6 +106,9 @@ const handleCommand = (command: string): void => {
     case "list":
       listTodos();
       break;
+    case "update":
+      updateTodo();
+      break;
     case "remove":
       removeTodo();
       break;
@@ -97,7 +126,7 @@ const handleCommand = (command: string): void => {
 const showMenu = (): void => {
   console.clear();
   console.log("\n=== Todo List App ===");
-  console.log("Commands: add, list, remove, exit\n");
+  console.log("Commands: add, list, update, remove, exit\n");
   process.stdout.write("> ");
   rl.question("", (command: string) => {
     handleCommand(command);
@@ -106,5 +135,5 @@ const showMenu = (): void => {
 
 // Start the app
 console.log("\n=== Todo List App ===");
-console.log("Commands: add, list, remove, exit\n");
+console.log("Commands: add, list, update, remove, exit\n");
 showMenu();
