@@ -128,6 +128,22 @@ const removeTodo = (): void => {
   });
 };
 
+// Clear all todos
+const clearAll = (): void => {
+  rl.question(
+    "Are you sure? This will delete all tasks (yes/no): ",
+    (confirm: string) => {
+      if (confirm.trim().toLowerCase() === "yes") {
+        todos = [];
+        console.log("All tasks cleared!\n");
+      } else {
+        console.log("Cancelled.\n");
+      }
+      showMenu();
+    },
+  );
+};
+
 // Handle command logic
 const handleCommand = (command: string): void => {
   switch (command.trim().toLowerCase()) {
@@ -143,6 +159,9 @@ const handleCommand = (command: string): void => {
     case "remove":
       removeTodo();
       break;
+    case "clear all":
+      clearAll();
+      break;
     case "exit":
       console.log("Goodbye!");
       rl.close();
@@ -157,7 +176,7 @@ const handleCommand = (command: string): void => {
 const showMenu = (): void => {
   console.clear();
   console.log("\n=== Todo List App ===");
-  console.log("Commands: add, list, update, remove, exit\n");
+  console.log("Commands: add, list, update, remove, clear all, exit\n");
   process.stdout.write("> ");
   rl.question("", (command: string) => {
     handleCommand(command);
@@ -166,5 +185,5 @@ const showMenu = (): void => {
 
 // Start the app
 console.log("\n=== Todo List App ===");
-console.log("Commands: add, list, update, remove, exit\n");
+console.log("Commands: add, list, update, remove, clear all, exit\n");
 showMenu();
