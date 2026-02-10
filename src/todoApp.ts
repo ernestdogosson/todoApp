@@ -18,22 +18,23 @@ const addTodo = (): void => {
   rl.question("Enter task: ", (text: string) => {
     if (text.trim() === "") {
       console.log("Task cannot be empty!\n");
-      showMenu();
+      rl.question("Press Enter to continue...", () => {
+        showMenu();
+      });
     } else {
       rl.question("Priority (high/medium/low): ", (priorityInput: string) => {
         const priority = priorityInput.trim().toLowerCase();
 
         // Validate priority
-        if (!["high", "medium", "low"].includes(priority)) {
-          console.log("Invalid priority! Using 'low' as default.\n");
+        const validPriority = ["high", "medium", "low"].includes(priority);
+        if (!validPriority) {
+          console.log("Invalid priority! Using 'low' as default.");
         }
 
         const newTodo: Todo = {
           id: Date.now(),
           text: text.trim(),
-          priority: (["high", "medium", "low"].includes(priority)
-            ? priority
-            : "low") as "high" | "medium" | "low",
+          priority: (validPriority ? priority : "low") as "high" | "medium" | "low",
         };
 
         todos.push(newTodo);
@@ -55,7 +56,7 @@ const listTodos = (): void => {
 
   console.clear();
   console.log("\n=== Todo List App ===");
-  console.log("Commands: add, list, remove, exit\n");
+  console.log("Commands: add, list, update, remove, clear all, exit\n");
 
   if (todos.length === 0) {
     console.log("No todos yet!\n");
@@ -78,11 +79,22 @@ const listTodos = (): void => {
 const updateTodo = (): void => {
   rl.question("Enter task ID to update: ", (input: string) => {
     const id: number = parseInt(input);
+
+    if (isNaN(id)) {
+      console.log("Invalid ID!\n");
+      rl.question("Press Enter to continue...", () => {
+        showMenu();
+      });
+      return;
+    }
+
     // Find the todo with matching ID
     const todoToUpdate = todos.find((todo: Todo) => todo.id === id);
     if (!todoToUpdate) {
       console.log("Task not found!\n");
-      showMenu();
+      rl.question("Press Enter to continue...", () => {
+        showMenu();
+      });
     } else {
       console.log(
         `Current task: ${todoToUpdate.text} ${todoToUpdate.priority}`,
@@ -90,6 +102,9 @@ const updateTodo = (): void => {
       rl.question("Enter new task text: ", (newText: string) => {
         if (newText.trim() === "") {
           console.log("Task cannot be empty!\n");
+          rl.question("Press Enter to continue...", () => {
+            showMenu();
+          });
         } else {
           todoToUpdate.text = newText.trim();
           rl.question(
@@ -114,17 +129,27 @@ const removeTodo = (): void => {
   rl.question("Enter task ID to remove: ", (input: string) => {
     const id: number = parseInt(input);
 
-    // Use filter to create new array without the todo
-    const updatedTodos: Todo[] = todos.filter((todo: Todo) => todo.id !== id);
-
-    if (updatedTodos.length === todos.length) {
-      console.log("Task not found!\n");
-    } else {
-      todos = updatedTodos;
-      console.log("Task removed successfully!\n");
+    if (isNaN(id)) {
+      console.log("Invalid ID!\n");
+      rl.question("Press Enter to continue...", () => {
+        showMenu();
+      });
+      return;
     }
 
-    showMenu();
+    // Find the todo with matching ID
+    const todoToRemove = todos.find((todo: Todo) => todo.id === id);
+
+    if (!todoToRemove) {
+      console.log("Task not found!\n");
+      rl.question("Press Enter to continue...", () => {
+        showMenu();
+      });
+    } else {
+      todos = todos.filter((todo: Todo) => todo.id !== id);
+      console.log("Task removed successfully!\n");
+      showMenu();
+    }
   });
 };
 
@@ -136,8 +161,16 @@ const clearAll = (): void => {
       if (confirm.trim().toLowerCase() === "yes") {
         todos = [];
         console.log("All tasks cleared!\n");
+        rl.question("Press Enter to continue...", () => {
+          showMenu();
+        });
+        return;
       } else {
         console.log("Cancelled.\n");
+        rl.question("Press Enter to continue...", () => {
+          showMenu();
+        });
+        return;
       }
       showMenu();
     },
@@ -168,7 +201,9 @@ const handleCommand = (command: string): void => {
       break;
     default:
       console.log("Unknown command\n");
-      showMenu();
+      rl.question("Press Enter to continue...", () => {
+        showMenu();
+      });
   }
 };
 
