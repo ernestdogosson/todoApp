@@ -75,27 +75,35 @@ const listTodos = (): void => {
   });
 };
 
-// Update a todo
 const updateTodo = (): void => {
   rl.question("Enter task ID to update: ", (input: string) => {
     const id: number = parseInt(input);
-
     // Find the todo with matching ID
     const todoToUpdate = todos.find((todo: Todo) => todo.id === id);
-
     if (!todoToUpdate) {
       console.log("Task not found!\n");
       showMenu();
     } else {
-      console.log(`Current task: ${todoToUpdate.text}`);
+      console.log(
+        `Current task: ${todoToUpdate.text} ${todoToUpdate.priority}`,
+      );
       rl.question("Enter new task text: ", (newText: string) => {
         if (newText.trim() === "") {
           console.log("Task cannot be empty!\n");
         } else {
           todoToUpdate.text = newText.trim();
-          console.log("Task updated successfully!\n");
+          rl.question(
+            "Enter new priority (high/medium/low): ",
+            (priorityInput: string) => {
+              const priority = priorityInput.trim().toLowerCase();
+              if (["high", "medium", "low"].includes(priority)) {
+                todoToUpdate.priority = priority as "high" | "medium" | "low";
+              }
+              console.log("Task updated successfully!\n");
+              showMenu();
+            },
+          );
         }
-        showMenu();
       });
     }
   });
