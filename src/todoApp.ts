@@ -46,6 +46,13 @@ const addTodo = (): void => {
 
 // List all todos
 const listTodos = (): void => {
+  const colors = {
+    high: "\x1b[31m", // Red
+    medium: "\x1b[33m", // Yellow
+    low: "\x1b[32m", // Green
+    reset: "\x1b[0m",
+  };
+
   console.clear();
   console.log("\n=== Todo List App ===");
   console.log("Commands: add, list, remove, exit\n");
@@ -55,7 +62,9 @@ const listTodos = (): void => {
   } else {
     console.log("Your Todos:");
     todos.forEach((todo: Todo) => {
-      console.log(`${todo.id}. ${todo.text}`);
+      console.log(
+        `${todo.id}. ${todo.text}. priority: ${colors[todo.priority]}${todo.priority}${colors.reset}`,
+      );
     });
     console.log("");
   }
