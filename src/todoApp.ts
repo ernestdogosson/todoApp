@@ -3,6 +3,7 @@ import { createInterface } from "readline";
 type Todo = {
   id: number;
   text: string;
+  priority: "high" | "medium" | "low";
 };
 
 let todos: Todo[] = [];
@@ -17,16 +18,29 @@ const addTodo = (): void => {
   rl.question("Enter task: ", (text: string) => {
     if (text.trim() === "") {
       console.log("Task cannot be empty!\n");
+      showMenu();
     } else {
-      const newTodo: Todo = {
-        id: Date.now(),
-        text: text.trim(),
-      };
+      rl.question("Priority (high/medium/low): ", (priorityInput: string) => {
+        const priority = priorityInput.trim().toLowerCase();
 
-      todos.push(newTodo);
-      console.log("✓ Task added successfully!\n");
+        // Validate priority
+        if (!["high", "medium", "low"].includes(priority)) {
+          console.log("Invalid priority! Using 'low' as default.\n");
+        }
+
+        const newTodo: Todo = {
+          id: Date.now(),
+          text: text.trim(),
+          priority: (["high", "medium", "low"].includes(priority)
+            ? priority
+            : "low") as "high" | "medium" | "low",
+        };
+
+        todos.push(newTodo);
+        console.log("Task added successfully!\n");
+        showMenu();
+      });
     }
-    showMenu();
   });
 };
 
